@@ -371,7 +371,7 @@ if CLIENT then
 			local enid,stid,grou = v:EntIndex(),v:SteamID(),team.GetName(v:Team())
 			local teamcol        = team.GetColor(v:Team())
 			teamcol.a            = a*255
-			grou = grou:sub(1,1):upper()..grou:sub(2,nil)
+			grou = grou:sub(1,1):upper()..(grou:sub(-1) == "s" and grou:sub(2,-2) or grou:sub(2,nil))
 			local invcol         = teamcol == Color(0,0,0,teamcol.a) and true or false
 			frnd = v == LocalPlayer() and "Yourself" or v:IsBot() and "Bot" or (frnd == "friend" and "Friend" or frnd == "blocked" and "Blocked" or "Not A Friend")
 			ping = v:IsBot() and "N/A" or ping

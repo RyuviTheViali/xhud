@@ -363,7 +363,7 @@ if CLIENT then
 			if v:EntIndex() <= 0 then continue end
 			local e = v:CPPIGetOwner()
 			if not e or not e:IsValid() then continue end
-			if v:GetClass() == "gmod_hands" then continue end
+			if v:GetClass() == "gmod_hands" or v:GetClass() == "physgun_beam" then continue end
 			cppiowners[e] = cppiowners[e]+1
 		end
 		
@@ -450,6 +450,7 @@ if CLIENT then
 							ShowDPTMenu(v)
 						else	
 							pdtcool = CurTime()+0.45
+							vv[1] = isnumber(vv[1]) and tostring(vv[1]) or vv[1]
 							SetClipboardText(vv[1]:sub(1,1) == "{" and vv[1]:sub(-1) == "}" and "Entity("..vv[1]:sub(2,-2)..")" or vv[1])
 						end
 					end

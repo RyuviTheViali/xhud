@@ -57,13 +57,14 @@ if CLIENT then
 	StarlightScoreVis = StarlightScoreVis or false
 	GM.ShowScoreboard = GM.ShowScoreboard or false	
 	
-	surface.CreateFont("sls huge"    ,{font="Helvetica",size=75,weight=0  ,antialias=true})
-	surface.CreateFont("sls host"    ,{font="Helvetica",size=40,weight=0  ,antialias=true})
-	surface.CreateFont("sls bigtitle",{font="Helvetica",size=36,weight=700,antialias=true})
-	surface.CreateFont("sls title"   ,{font="Helvetica",size=23,weight=700,antialias=true})
-	surface.CreateFont("sls bigroll" ,{font="Helvetica",size=48,weight=700,antialias=true})
-	surface.CreateFont("sls bigdata" ,{font="Helvetica",size=23,weight=700,antialias=true})
-	surface.CreateFont("sls data"    ,{font="Helvetica",size=14,weight=700,antialias=true})
+	surface.CreateFont("sls massive" ,{font="Helvetica",size=100,weight=0  ,antialias=true})
+	surface.CreateFont("sls huge"    ,{font="Helvetica",size=75 ,weight=0  ,antialias=true})
+	surface.CreateFont("sls host"    ,{font="Helvetica",size=40 ,weight=0  ,antialias=true})
+	surface.CreateFont("sls bigtitle",{font="Helvetica",size=36 ,weight=700,antialias=true})
+	surface.CreateFont("sls title"   ,{font="Helvetica",size=23 ,weight=700,antialias=true})
+	surface.CreateFont("sls bigroll" ,{font="Helvetica",size=48 ,weight=700,antialias=true})
+	surface.CreateFont("sls bigdata" ,{font="Helvetica",size=23 ,weight=700,antialias=true})
+	surface.CreateFont("sls data"    ,{font="Helvetica",size=14 ,weight=700,antialias=true})
 	
 	local ox,oy       = ScrW()/2,ScrH()/2-ScrH()/6
 	local ow,oh       = ScrW()/2,ScrH()/3
@@ -305,26 +306,26 @@ if CLIENT then
 		cw,ch = context and Lerp(lspd,cw,ScrW()) or (vis and Lerp(lspd,cw,w) or Lerp(lspd,cw,cl*w)),context and Lerp(lspd,ch,ScrH()) or (vis and Lerp(lspd,ch,h) or Lerp(lspd,ch,cll*h))
 		y,w,h = context and Lerp(lspd,y,ScrH()/2) or Lerp(lspd,y,oy),context and Lerp(lspd,w,ScrW()*1.5) or Lerp(lspd,w,ow),context and Lerp(lspd,h,ScrH()*1.5) or Lerp(lspd,h,oh)
 		x1,x2,y1,y2 = (x-l*w*0.8)+5,(x+l*w*0.8)-5,(y-ll*h*0.2)+5,(y+ll*h*0.2)-5
-	    local p1 = {
-	    	{["x"]=x1-5,["y"]=y,	["u"]=x1/ScrW(),["v"]=y /ScrH()},
-	    	{["x"]=x,	["y"]=y1-5,	["u"]=x /ScrW(),["v"]=y1/ScrH()},
-	    	{["x"]=x2+5,["y"]=y,	["u"]=x2/ScrW(),["v"]=y /ScrH()},
-	    	{["x"]=x,	["y"]=y2+5,	["u"]=x /ScrW(),["v"]=y2/ScrH()}
-	    }
-	    x1,x2,y1,y2 = (x-l*w*0.7)+5,(x+l*w*0.7)-5,(y-ll*h*0.5)+5,(y+ll*h*0.5)-5
+		local p1 = {
+			{["x"]=x1-5,["y"]=y,	["u"]=x1/ScrW(),["v"]=y /ScrH()},
+			{["x"]=x,	["y"]=y1-5,	["u"]=x /ScrW(),["v"]=y1/ScrH()},
+			{["x"]=x2+5,["y"]=y,	["u"]=x2/ScrW(),["v"]=y /ScrH()},
+			{["x"]=x,	["y"]=y2+5,	["u"]=x /ScrW(),["v"]=y2/ScrH()}
+		}
+		x1,x2,y1,y2 = (x-l*w*0.7)+5,(x+l*w*0.7)-5,(y-ll*h*0.5)+5,(y+ll*h*0.5)-5
 		local p2 = {
-	    	{["x"]=x1-5,["y"]=y,	["u"]=x1/ScrW(),["v"]=y /ScrH()},
-	    	{["x"]=x,	["y"]=y1-5,	["u"]=x /ScrW(),["v"]=y1/ScrH()},
-	    	{["x"]=x2+5,["y"]=y,	["u"]=x2/ScrW(),["v"]=y /ScrH()},
-	    	{["x"]=x,	["y"]=y2+5,	["u"]=x /ScrW(),["v"]=y2/ScrH()}
-	    }
+			{["x"]=x1-5,["y"]=y,	["u"]=x1/ScrW(),["v"]=y /ScrH()},
+			{["x"]=x,	["y"]=y1-5,	["u"]=x /ScrW(),["v"]=y1/ScrH()},
+			{["x"]=x2+5,["y"]=y,	["u"]=x2/ScrW(),["v"]=y /ScrH()},
+			{["x"]=x,	["y"]=y2+5,	["u"]=x /ScrW(),["v"]=y2/ScrH()}
+		}
 		x1,x2,y1,y2 = (x-l*w*0.4)+5,(x+l*w*0.4)-5,(y-ll*h*0.6)+5,(y+ll*h*0.6)-5
 		 local p3 = {
-	    	{["x"]=x1-5,["y"]=y,	["u"]=x1/ScrW(),["v"]=y /ScrH()},
-	    	{["x"]=x,	["y"]=y1-5,	["u"]=x /ScrW(),["v"]=y1/ScrH()},
-	    	{["x"]=x2+5,["y"]=y,	["u"]=x2/ScrW(),["v"]=y /ScrH()},
-	    	{["x"]=x,	["y"]=y2+5,	["u"]=x /ScrW(),["v"]=y2/ScrH()}
-	    }
+			{["x"]=x1-5,["y"]=y,	["u"]=x1/ScrW(),["v"]=y /ScrH()},
+			{["x"]=x,	["y"]=y1-5,	["u"]=x /ScrW(),["v"]=y1/ScrH()},
+			{["x"]=x2+5,["y"]=y,	["u"]=x2/ScrW(),["v"]=y /ScrH()},
+			{["x"]=x,	["y"]=y2+5,	["u"]=x /ScrW(),["v"]=y2/ScrH()}
+		}
 		if #sprites <= maxsprites then NewSprite() end
 		for i=1,#sprites do
 			if CurTime()-sprites[i][6] >= 0 then NewSprite(i) end
@@ -343,25 +344,40 @@ if CLIENT then
 			surface.DrawPoly(p3)
 			surface.SetDrawColor(bgcol)
 		end
-	    surface.SetTexture(surface.GetTextureID("vgui/white"))
-	    surface.SetDrawColor(bgcol)
-	    surface.DrawPoly(p1)
-	    surface.DrawPoly(p2)
-	    surface.DrawPoly(p3)
-	   	draw.SimpleTextOutlined("X E N O R A","sls huge",cx,cy-ch/2*0.85,Color(255,255,255,a*180),1,1,1,Color(0,0,0,a*64))
-	    
-	    for k,v in pairs(player.GetAll()) do p[#p+1] = v end
+		surface.SetTexture(surface.GetTextureID("vgui/white"))
+		surface.SetDrawColor(bgcol)
+		surface.DrawPoly(p1)
+		surface.DrawPoly(p2)
+		surface.DrawPoly(p3)
+		draw.SimpleTextOutlined("X E N O R A",context and "sls massive" or "sls huge",cx,cy-ch/2*0.85,Color(255,255,255,a*180),1,1,1,Color(0,0,0,a*64))
+		
+		local cppiowners = {}
+
+		for k,v in pairs(player.GetAll()) do
+			p[#p+1] = v
+			cppiowners[v] = 0
+		end
 		table.sort(p,function(a,b) return a:EntIndex() < b:EntIndex() end)
+
+		for k,v in pairs(ents.GetAll()) do
+			if v:EntIndex() <= 0 then continue end
+			local e = v:CPPIGetOwner()
+			if not e or not e:IsValid() then continue end
+			if v:GetClass() == "gmod_hands" then continue end
+			cppiowners[e] = cppiowners[e]+1
+		end
 		
 		local datafont  = context and "sls bigdata"  or "sls data"
 		local titlefont = context and "sls bigtitle" or "sls title"
 		
 		draw.SimpleTextOutlined("Friend Status",titlefont,cx-cw/2*0.85,-ch*0.25+cy+(15+b*20),Color(255,255,255,a*255),1,1,1,Color(0,0,0,a*255))
-		draw.SimpleTextOutlined("Ping"         ,titlefont,cx-cw/2*0.55,-ch*0.25+cy+(15+b*20),Color(255,255,255,a*255),1,1,1,Color(0,0,0,a*255))
-		draw.SimpleTextOutlined("Hours"        ,titlefont,cx-cw/2*0.3 ,-ch*0.25+cy+(15+b*20),Color(255,255,255,a*255),1,1,1,Color(0,0,0,a*255))
+		draw.SimpleTextOutlined("Ping"         ,titlefont,cx-cw/2*0.63,-ch*0.25+cy+(15+b*20),Color(255,255,255,a*255),1,1,1,Color(0,0,0,a*255))
+		draw.SimpleTextOutlined("Hours"        ,titlefont,cx-cw/2*0.47,-ch*0.25+cy+(15+b*20),Color(255,255,255,a*255),1,1,1,Color(0,0,0,a*255))
+		draw.SimpleTextOutlined("Props"        ,titlefont,cx-cw/2*0.30,-ch*0.25+cy+(15+b*20),Color(255,255,255,a*255),1,1,1,Color(0,0,0,a*255))
 		draw.SimpleTextOutlined("Name"         ,titlefont,cx          ,-ch*0.25+cy+(15+b*20),Color(255,255,255,a*255),1,1,1,Color(0,0,0,a*255))
-		draw.SimpleTextOutlined("Index"        ,titlefont,cx+cw/2*0.3 ,-ch*0.25+cy+(15+b*20),Color(255,255,255,a*255),1,1,1,Color(0,0,0,a*255))
-		draw.SimpleTextOutlined("Steam ID"     ,titlefont,cx+cw/2*0.55,-ch*0.25+cy+(15+b*20),Color(255,255,255,a*255),1,1,1,Color(0,0,0,a*255))
+		draw.SimpleTextOutlined("Stats"        ,titlefont,cx+cw/2*0.30,-ch*0.25+cy+(15+b*20),Color(255,255,255,a*255),1,1,1,Color(0,0,0,a*255))
+		draw.SimpleTextOutlined("Index"        ,titlefont,cx+cw/2*0.44,-ch*0.25+cy+(15+b*20),Color(255,255,255,a*255),1,1,1,Color(0,0,0,a*255))
+		draw.SimpleTextOutlined("Steam ID"     ,titlefont,cx+cw/2*0.63,-ch*0.25+cy+(15+b*20),Color(255,255,255,a*255),1,1,1,Color(0,0,0,a*255))
 		draw.SimpleTextOutlined("Group"        ,titlefont,cx+cw/2*0.85,-ch*0.25+cy+(15+b*20),Color(255,255,255,a*255),1,1,1,Color(0,0,0,a*255))
 		
 		for k,v in pairs(p) do
@@ -373,53 +389,67 @@ if CLIENT then
 			teamcol.a            = a*255
 			grou = grou:sub(1,1):upper()..(grou:sub(-1) == "s" and grou:sub(2,-2) or grou:sub(2,nil))
 			local invcol         = teamcol == Color(0,0,0,teamcol.a) and true or false
+			local propcount      = cppiowners[v] or 0
 			frnd = v == LocalPlayer() and "Yourself" or v:IsBot() and "Bot" or (frnd == "friend" and "Friend" or frnd == "blocked" and "Blocked" or "Not A Friend")
 			ping = v:IsBot() and "N/A" or ping
 			enid = "{"..enid.."}"
 			stid = v:IsBot() and "STEAM_0:0:BOT" or stid
 			pdata[v] = pdata[v] or {}
-			local pdat  = {{frnd,0.85},{ping,0.55},{hour,0.3},{name,0},{enid,-0.3},{stid,-0.55},{grou,-0.85}}
+			local pdat  = {{frnd,0.85},{ping,0.63},{hour,0.47},{propcount,0.30},{name,0},{"hp-ar",-0.30},{enid,-0.44},{stid,-0.63},{grou,-0.85}}
+			local cantar = v:Team() <= LocalPlayer():Team()
 			
-			DepthButton(2000,not indepth and (v ~= LocalPlayer()),true,v:IsMuted() and "UNMUTE" or "MUTE","sls data",cx-cw/2*0.15-39,-ch*0.2+cy+k*cll*(15+b*20)-10,39,20,b*255,Color(0,0,0),function()
-	   			v:SetMuted(not v:IsMuted())
-	   		end)
-	   		
-	   		DepthButton(2003,not indepth and (v ~= LocalPlayer()),true,"GOTO","sls data",cx-cw/2*-0.15-22,-ch*0.2+cy+k*cll*(15+b*20)-10,39,20,b*255,Color(0,0,0),function()
-	   			SendCommand("Goto",v)	
-	   		end)
-	   		
-	   		DepthButton(2004,not indepth and (v ~= LocalPlayer()),true,"BRING","sls data",cx-cw/2*-0.15+22,-ch*0.2+cy+k*cll*(15+b*20)-10,39,20,b*255,Color(0,0,0),function()
-	   			SendCommand("Bring",v)	
-	   		end)
+			DepthButton(2000,not indepth and (v ~= LocalPlayer()),true,v:IsMuted() and "UNMUTE" or "MUTE","sls data",cx-cw/2*0.15-39+22,-ch*0.2+cy+k*cll*(15+b*20)-10,39,20,b*255,Color(0,0,0),function()
+				v:SetMuted(not v:IsMuted())
+			end)
+
+			DepthButton(2001,not indepth and cantar,true,"CLEAN","sls data",cx-cw/2*0.15-39-22,-ch*0.2+cy+k*cll*(15+b*20)-10,39,20,b*255,Color(0,0,0),function()
+				SendCommand("Cleanup",v)
+			end)
+			
+			DepthButton(2003,not indepth and (v ~= LocalPlayer()),true,"GOTO","sls data",cx-cw/2*-0.15-22,-ch*0.2+cy+k*cll*(15+b*20)-10,39,20,b*255,Color(0,0,0),function()
+				SendCommand("Goto",v)	
+			end)
+			
+			DepthButton(2004,not indepth and (v ~= LocalPlayer()) and cantar,true,"BRING","sls data",cx-cw/2*-0.15+22,-ch*0.2+cy+k*cll*(15+b*20)-10,39,20,b*255,Color(0,0,0),function()
+				SendCommand("Bring",v)	
+			end)
 			
 			for kk,vv in ipairs(pdat) do
-				local ddx,ddy = cx-cw/2*vv[2],-ch*0.2+cy+k*cll*(15+b*20)
-				local hh,cc = TextButton(vv[1],datafont,ddx,ddy)
-				local ready = hh and not indepth and dptcool-CurTime() <= 0
-				local fo    = ready and "sls bigroll" or datafont
-				local col   = ready and (cc and Color(0  ,0,0,a*255) or (invcol and Color(255,255,255,a*255) or Color(0,0,0,a*255))	) or teamcol
-				local oul   = ready and (cc and Color(255,0,0,a*255) or teamcol) or (invcol and Color(255,255,255,a*255) or Color(0,0,0,a*255))
-				pdata[v][kk] = pdata[v][kk] or 0.5
-				pdata[v][kk] = ready and Lerp(0.5,pdata[v][kk],1) or Lerp(0.25,pdata[v][kk],0.5)
-				txtmatx:Translate(Vector(ddx,ddy))
-				txtmatx:SetScale(Vector(pdata[v][kk],pdata[v][kk],pdata[v][kk]))
-				txtmatx:SetTranslation(Vector(ddx,ddy))
-				txtmatx:Translate(-Vector(ddx,ddy))
-				if not ready and pdata[v][kk] <= 1 then
-					draw.SimpleTextOutlined(vv[1],fo,ddx,ddy,col,1,1,1,oul)
+				if vv[1] == "hp-ar" then
+					local ddx,ddy = cx-cw/2*vv[2],-ch*0.2+cy+k*cll*(15+b*20)
+					draw.RoundedBox(0,ddx-30-b*30,ddy-3-b*3,60+b*60,6+b*6,Color(0,0,0,a*180))
+					local hp,ar = math.Clamp(v:Health()/v:GetMaxHealth(),0,1),math.Clamp(v:Armor()/(v:Armor() <= 200 and 200 or 255),0,1)
+					draw.RoundedBox(0,ddx-30-b*30,ddy-3-b*3,(60+b*60)*hp,(ar == 0 and 6 or 3)+b*(ar == 0 and 6 or 3),Color(hp <= 0.25 and math.abs(math.sin(CurTime()*6)*255) or 255,64,64,a*128))
+					draw.RoundedBox(0,ddx-30-b*30,ddy      ,(60+b*60)*ar,3+b*3,Color(64,ar <= 0.25 and math.abs(math.sin(CurTime()*6)*255) or 255,64,a*128))
 				else
-					cam.PushModelMatrix(txtmatx)
+					local ddx,ddy = cx-cw/2*vv[2],-ch*0.2+cy+k*cll*(15+b*20)
+					local hh,cc = TextButton(vv[1],datafont,ddx,ddy)
+					local ready = hh and not indepth and dptcool-CurTime() <= 0
+					local fo    = ready and "sls bigroll" or datafont
+					local col   = ready and (cc and Color(0  ,0,0,a*255) or (invcol and Color(255,255,255,a*255) or Color(0,0,0,a*255))	) or teamcol
+					local oul   = ready and (cc and Color(255,0,0,a*255) or teamcol) or (invcol and Color(255,255,255,a*255) or Color(0,0,0,a*255))
+					pdata[v][kk] = pdata[v][kk] or 0.5
+					pdata[v][kk] = ready and Lerp(0.5,pdata[v][kk],1) or Lerp(0.25,pdata[v][kk],0.5)
+					txtmatx:Translate(Vector(ddx,ddy))
+					txtmatx:SetScale(Vector(pdata[v][kk],pdata[v][kk],pdata[v][kk]))
+					txtmatx:SetTranslation(Vector(ddx,ddy))
+					txtmatx:Translate(-Vector(ddx,ddy))
+					if not ready and pdata[v][kk] <= 1 then
 						draw.SimpleTextOutlined(vv[1],fo,ddx,ddy,col,1,1,1,oul)
-					cam.PopModelMatrix()
-				end
-				if ready and cc and pdtcool-CurTime() <= 0 then
-					if kk == 4 then
-						pdtcool = CurTime()+0.45
-						indepth,dptcool = true,CurTime()+0.25
-						ShowDPTMenu(v)
-					else	
-						pdtcool = CurTime()+0.45
-						SetClipboardText(vv[1]:sub(1,1) == "{" and vv[1]:sub(-1) == "}" and "Entity("..vv[1]:sub(2,-2)..")" or vv[1])
+					else
+						cam.PushModelMatrix(txtmatx)
+							draw.SimpleTextOutlined(vv[1],fo,ddx,ddy,col,1,1,1,oul)
+						cam.PopModelMatrix()
+					end
+					if ready and cc and pdtcool-CurTime() <= 0 then
+						if kk == 5 then
+							pdtcool = CurTime()+0.45
+							indepth,dptcool = true,CurTime()+0.25
+							ShowDPTMenu(v)
+						else	
+							pdtcool = CurTime()+0.45
+							SetClipboardText(vv[1]:sub(1,1) == "{" and vv[1]:sub(-1) == "}" and "Entity("..vv[1]:sub(2,-2)..")" or vv[1])
+						end
 					end
 				end
 			end
@@ -444,76 +474,76 @@ if CLIENT then
 				surface.DrawPoly(dpol)
 				surface.SetDrawColor(Color(bgcol.r,bgcol.g,bgcol.b,c*255))
 			end
-		    surface.SetTexture(surface.GetTextureID("vgui/white"))
-		    surface.SetDrawColor(Color(bgcol.r,bgcol.g,bgcol.b,c*180))
-		    surface.DrawPoly(dpol)
-		    
-		    local cantar = dptcply:Team() <= LocalPlayer():Team()
-	    	
-	    	local bo = 16
-	    	local bw,bh = dptmenu:GetWide()/4-bo*1.25,32
-	   		
-	   		DepthButton(1,dptcply ~= LocalPlayer() and cantar or false,true,"Bring","sls data",xx+bo,yy+bo,bw,bh,c*255,Color(0,0,0),function()
-	   			SendCommand("Bring",dptcply)
-	   		end)
-	   		
-	   		DepthButton(2,cantar,true,dptcply:Alive() and (dptcply == LocalPlayer() and "Suicide" or "Kill") or "Revive","sls data",xx+bw+bo*2,yy+bo,bw,bh,c*255,Color(0,0,0),function()
-	   			SendCommand(dptcply:Alive() and (dptcply == LocalPlayer() and "Kill" or "Slay") or "Revive",dptcply)
-	   		end)
-	   		
-	   		DepthButton(3,cantar,true,{"Kick","Are you sure?"},"sls data",xx+ww-bw*2-bo*2,yy+bo,bw,bh,c*255,Color(0,0,0),function()
+			surface.SetTexture(surface.GetTextureID("vgui/white"))
+			surface.SetDrawColor(Color(bgcol.r,bgcol.g,bgcol.b,c*180))
+			surface.DrawPoly(dpol)
+			
+			local cantar = dptcply:Team() <= LocalPlayer():Team()
+			
+			local bo = 16
+			local bw,bh = dptmenu:GetWide()/4-bo*1.25,32
+			
+			DepthButton(1,dptcply ~= LocalPlayer() and cantar or false,true,"Bring","sls data",xx+bo,yy+bo,bw,bh,c*255,Color(0,0,0),function()
+				SendCommand("Bring",dptcply)
+			end)
+			
+			DepthButton(2,cantar,true,dptcply:Alive() and (dptcply == LocalPlayer() and "Suicide" or "Kill") or "Revive","sls data",xx+bw+bo*2,yy+bo,bw,bh,c*255,Color(0,0,0),function()
+				SendCommand(dptcply:Alive() and (dptcply == LocalPlayer() and "Kill" or "Slay") or "Revive",dptcply)
+			end)
+			
+			DepthButton(3,cantar,true,{"Kick","Are you sure?"},"sls data",xx+ww-bw*2-bo*2,yy+bo,bw,bh,c*255,Color(0,0,0),function()
 				SendCommand("Kick",dptcply)	
-	   		end)
-	   		
-	   		DepthButton(4,true,true,"User Profile","sls data",xx+ww-bw-bo,yy+bo,bw,bh,c*255,Color(0,0,0),function()
+			end)
+			
+			DepthButton(4,true,true,"User Profile","sls data",xx+ww-bw-bo,yy+bo,bw,bh,c*255,Color(0,0,0),function()
 				gui.OpenURL("http://steamcommunity.com/profiles/"..dptcply:SteamID64(),true)
-	   		end)
-	   		
-	   		DepthButton(5,dptcply ~= LocalPlayer() and true or false,true,"Goto","sls data",xx+bo,yy+bh+bo*2,bw,bh,c*255,Color(0,0,0),function()
-	   			SendCommand("Goto",dptcply)
-	   		end)
-	   		
-	   		DepthButton(6,cantar,true,"Strip Weapons","sls data",xx+bw+bo*2,yy+bh+bo*2,bw,bh,c*255,Color(0,0,0),function()
-	   			SendCommand("Strip",dptcply)
-	   		end)
-	   		
-	   		DepthButton(7,cantar,true,{"Drop Connection","Are you sure?"},"sls data",xx+ww-bw*2-bo*2,yy+bh+bo*2,bw,bh,c*255,Color(0,0,0),function()
+			end)
+			
+			DepthButton(5,dptcply ~= LocalPlayer() and true or false,true,"Goto","sls data",xx+bo,yy+bh+bo*2,bw,bh,c*255,Color(0,0,0),function()
+				SendCommand("Goto",dptcply)
+			end)
+			
+			DepthButton(6,cantar,true,"Strip Weapons","sls data",xx+bw+bo*2,yy+bh+bo*2,bw,bh,c*255,Color(0,0,0),function()
+				SendCommand("Strip",dptcply)
+			end)
+			
+			DepthButton(7,cantar,true,{"Drop Connection","Are you sure?"},"sls data",xx+ww-bw*2-bo*2,yy+bh+bo*2,bw,bh,c*255,Color(0,0,0),function()
 				SendCommand("Drop",dptcply)	
-	   		end) 
-	   		
-	   		DepthButton(8,cantar,true,"Cleanup","sls data",xx+ww-bw-bo,yy+bh+bo*2,bw,bh,c*255,Color(0,0,0),function()
+			end) 
+			
+			DepthButton(8,cantar,true,"Cleanup","sls data",xx+ww-bw-bo,yy+bh+bo*2,bw,bh,c*255,Color(0,0,0),function()
 				SendCommand("Cleanup",dptcply)	
-	   		end)
-	   		
-	   		DepthButton(9,LocalPlayer():CheckUserGroupLevel("guardians"),false,dptcply:IsFrozen() and "Unfreeze" or "Freeze","sls data",xx+bw+bo*2,yy+bh*2+bo*3,bw,bh,c*255,Color(0,0,0),function()
+			end)
+			
+			DepthButton(9,LocalPlayer():CheckUserGroupLevel("guardians"),false,dptcply:IsFrozen() and "Unfreeze" or "Freeze","sls data",xx+bw+bo*2,yy+bh*2+bo*3,bw,bh,c*255,Color(0,0,0),function()
 				SendCommand("Freeze",dptcply)
-	   		end)
-	   		
-	   		DepthButton(10,LocalPlayer():CheckUserGroupLevel("overwatch"),false,"Set Group","sls data",xx+ww-bw-bo,yy+bh*2+bo*3,bw,bh,c*255,Color(0,0,0),function()
+			end)
+			
+			DepthButton(10,LocalPlayer():CheckUserGroupLevel("overwatch"),false,"Set Group","sls data",xx+ww-bw-bo,yy+bh*2+bo*3,bw,bh,c*255,Color(0,0,0),function()
 				grpenab = not grpenab
-	   		end)
-	   		
-	   		grpdrop = grpenab and AdvLerp(grpdrop,0,1,1,speed/2,0.01) or AdvLerp(grpdrop,0,1,-1,speed,0.01)
-	   		if grpenab and grpdrop > 0 then
-	   			if #grpordr == 0 then
-		   			for k,v in pairs(team.GetAllTeams()) do
-		   				if k >= 10 or k < 1 then continue end
-		   				grpordr[#grpordr+1] = {k,v}
-	   				end
-   				end
-	   			for k,v in pairs(grpordr) do
-	   				local clc = Color(v[2].Color.r,v[2].Color.g,v[2].Color.b,255)
-	   				local ala = grpdrop >= 0.9 and grpenab and tonumber(v[1]) <= LocalPlayer():Team()
-	   				DepthButton(50+k,ala,true,v[2].Name,"sls data",xx+ww-bw-bo,bh/2+yy+bh*2+bo*3+k*grpdrop*bh/2,bw,bh/2,grpdrop*255,clc,function()
-	   					SendCommand("SetGroup",dptcply,v[2].Name:lower())
+			end)
+			
+			grpdrop = grpenab and AdvLerp(grpdrop,0,1,1,speed/2,0.01) or AdvLerp(grpdrop,0,1,-1,speed,0.01)
+			if grpenab and grpdrop > 0 then
+				if #grpordr == 0 then
+					for k,v in pairs(team.GetAllTeams()) do
+						if k >= 10 or k < 1 then continue end
+						grpordr[#grpordr+1] = {k,v}
+					end
+				end
+				for k,v in pairs(grpordr) do
+					local clc = Color(v[2].Color.r,v[2].Color.g,v[2].Color.b,255)
+					local ala = grpdrop >= 0.9 and grpenab and tonumber(v[1]) <= LocalPlayer():Team()
+					DepthButton(50+k,ala,true,v[2].Name,"sls data",xx+ww-bw-bo,bh/2+yy+bh*2+bo*3+k*grpdrop*bh/2,bw,bh/2,grpdrop*255,clc,function()
+						SendCommand("SetGroup",dptcply,v[2].Name:lower())
 						grpenab = false
-			   		end)
-   				end
-   			end
-	   		
-		    local tc = team.GetColor(dptcply:Team())
-		    tc.a = c*255
-		    local invtc = tc == Color(0,0,0,tc.a)
+					end)
+				end
+			end
+			
+			local tc = team.GetColor(dptcply:Team())
+			tc.a = c*255
+			local invtc = tc == Color(0,0,0,tc.a)
 			draw.SimpleTextOutlined(dptcply:Nick():gsub("%^%d+", ""):gsub("<(.-)=(.-)>", ""),"sls huge",xx+ww/2,yy+hh*0.8,tc,1,1,1,invtc and Color(255,255,255,c*255) or Color(0,0,0,c*255))
 		end
 		

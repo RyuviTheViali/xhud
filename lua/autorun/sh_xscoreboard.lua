@@ -419,8 +419,10 @@ if CLIENT then
 					local ddx,ddy = cx-cw/2*vv[2],-ch*0.2+cy+k*cll*(15+b*20)
 					draw.RoundedBox(0,ddx-30-b*30,ddy-3-b*3,60+b*60,6+b*6,Color(0,0,0,a*180))
 					local hp,ar = math.Clamp(v:Health()/v:GetMaxHealth(),0,1),math.Clamp(v:Armor()/(v:Armor() <= 200 and 200 or 255),0,1)
-					draw.RoundedBox(0,ddx-30-b*30,ddy-3-b*3,(60+b*60)*hp,(ar == 0 and 6 or 3)+b*(ar == 0 and 6 or 3),Color(hp <= 0.25 and math.abs(math.sin(CurTime()*6)*255) or 255,64,64,a*128))
-					draw.RoundedBox(0,ddx-30-b*30,ddy      ,(60+b*60)*ar,3+b*3,Color(64,ar <= 0.25 and math.abs(math.sin(CurTime()*6)*255) or 255,64,a*128))
+					local hpcol = v:Health()/v:GetMaxHealth() <= 1 and Color(hp <= 0.25 and math.abs(math.sin(CurTime()*6)*255) or 255,64,64,a*128) or Color(255,200,64,a*128)
+					local arcol = Color(64,ar <= 0.25 and math.abs(math.sin(CurTime()*6)*255) or 255,64,a*128)
+					draw.RoundedBox(0,ddx-30-b*30,ddy-3-b*3,(60+b*60)*hp,(ar == 0 and 6 or 3)+b*(ar == 0 and 6 or 3),hpcol)
+					draw.RoundedBox(0,ddx-30-b*30,ddy      ,(60+b*60)*ar,3+b*3,arcol)
 				else
 					local ddx,ddy = cx-cw/2*vv[2],-ch*0.2+cy+k*cll*(15+b*20)
 					local hh,cc = TextButton(vv[1],datafont,ddx,ddy)

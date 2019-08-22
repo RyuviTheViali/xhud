@@ -5,6 +5,7 @@ local function XHUDInit()
 	veccoms.lowhealthwiggle = veccoms.lowhealthwiggle or 1
 
 	local m = LocalPlayer()
+	if not m or not m:IsValid() then return end
 	local lhnn = lhnn or CreateSound(m,"ui/test.wav")
 	local blur,alpha = Material("pp/blurscreen"),128
 	local bgcol,o = Color(0,0,0,alpha),Color(0,0,0,255)

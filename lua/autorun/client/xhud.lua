@@ -179,5 +179,5 @@ local function XHUDInit()
 	end
 	concommand.Add("vechud", VECHUDCOM,VECHUDCOM_autocomplete)
 end
-XHUDInit
+XHUDInit()
 hook.Add("InitPostEntity","VECHUDcheck_HUD",XHUDInit)

@@ -25,19 +25,22 @@ if SERVER then
 		xsys.CallCommand(p,"goto","",{v:Nick()})
 	end
 	functypes.Strip = function(p,v,g)
-		xsys.CallCommand(p,"strip","",{v:Nick()}) --!!!
+		xsys.CallCommand(p,"strip","",{v:Nick()})
 	end
 	functypes.Drop = function(p,v,g)
-		xsys.CallCommand(p,"drop","",{v:Nick()}) --!!!
+		xsys.CallCommand(p,"drop","",{v:Nick()})
 	end
 	functypes.Cleanup = function(p,v,g)
-		xsys.CallCommand(p,"cleanup","",{v:Nick()}) --!!!
+		xsys.CallCommand(p,"cleanup","",{v:Nick()})
 	end
 	functypes.SetGroup = function(p,v,g)
 		xsys.CallCommand(p,"rank","",{v:Nick(),g[1]})
 	end
 	functypes.Freeze = function(p,v,g)
-		xsys.CallCommand(p,"freeze","",{v:Nick()}) --!!!
+		xsys.CallCommand(p,"freeze","",{v:Nick()})
+	end
+	functypes.God = function(p,v,g)
+		xsys.CallCommand(p,"god","",{v:Nick()})
 	end
 	
 	net.Receive("sls-netchannel",function(l,p)
@@ -521,8 +524,12 @@ if CLIENT then
 			DepthButton(9,LocalPlayer():CheckUserGroupLevel("guardians"),false,dptcply:IsFrozen() and "Unfreeze" or "Freeze","sls data",xx+bw+bo*2,yy+bh*2+bo*3,bw,bh,c*255,Color(0,0,0),function()
 				SendCommand("Freeze",dptcply)
 			end)
+
+			DepthButton(10,true,false,dptcply:GetNetData("GodMode") and "Ungod" or "God","sls data",xx+bw+bo*2,yy+bh*3+bo*4,bw,bh,c*255,Color(0,0,0),function()
+				SendCommand("God",dptcply)
+			end)
 			
-			DepthButton(10,LocalPlayer():CheckUserGroupLevel("overwatch"),false,"Set Group","sls data",xx+ww-bw-bo,yy+bh*2+bo*3,bw,bh,c*255,Color(0,0,0),function()
+			DepthButton(11,LocalPlayer():CheckUserGroupLevel("overwatch"),false,"Set Rank","sls data",xx+ww-bw-bo,yy+bh*2+bo*3,bw,bh,c*255,Color(0,0,0),function()
 				grpenab = not grpenab
 			end)
 			

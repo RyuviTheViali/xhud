@@ -400,6 +400,7 @@ if CLIENT then
 			pdata[v] = pdata[v] or {}
 			local pdat  = {{frnd,0.85},{ping,0.63},{hour,0.47},{propcount,0.30},{name,0},{"hp-ar",-0.30},{enid,-0.44},{stid,-0.63},{grou,-0.85}}
 			local cantar = v:Team() <= LocalPlayer():Team()
+			local godded = v:GetNetData("GodMode")
 			
 			DepthButton(2000,not indepth and (v ~= LocalPlayer()),true,v:IsMuted() and "UNMUTE" or "MUTE","sls data",cx-cw/2*0.15-39+22,-ch*0.2+cy+k*cll*(15+b*20)-10,39,20,b*255,Color(0,0,0),function()
 				v:SetMuted(not v:IsMuted())
@@ -424,6 +425,9 @@ if CLIENT then
 					local hp,ar = math.Clamp(v:Health()/v:GetMaxHealth(),0,1),math.Clamp(v:Armor()/(v:Armor() <= 200 and 200 or 255),0,1)
 					local hpcol = v:Health()/v:GetMaxHealth() <= 1 and Color(hp <= 0.25 and math.abs(math.sin(CurTime()*6)*255) or 255,64,64,a*128) or Color(255,200,64,a*128)
 					local arcol = Color(64,ar <= 0.25 and math.abs(math.sin(CurTime()*6)*255) or 255,64,a*128)
+					if godded then
+						hpcol = Color(180,80,255,a*128)
+					end
 					draw.RoundedBox(0,ddx-30-b*30,ddy-3-b*3,(60+b*60)*hp,(ar == 0 and 6 or 3)+b*(ar == 0 and 6 or 3),hpcol)
 					draw.RoundedBox(0,ddx-30-b*30,ddy      ,(60+b*60)*ar,3+b*3,arcol)
 				else

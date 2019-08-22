@@ -399,22 +399,28 @@ if CLIENT then
 			stid = v:IsBot() and "STEAM_0:0:BOT" or stid
 			pdata[v] = pdata[v] or {}
 			local pdat  = {{frnd,0.85},{ping,0.63},{hour,0.47},{propcount,0.30},{name,0},{"hp-ar",-0.30},{enid,-0.44},{stid,-0.63},{grou,-0.85}}
-			local cantar = v:Team() <= LocalPlayer():Team()
+			local cantar = LocalPlayer():CheckUserGroupLevel(v:GetUserGroup())
 			local godded = v:GetNetData("GodMode")
 			
-			DepthButton(2000,not indepth and (v ~= LocalPlayer()),true,v:IsMuted() and "UNMUTE" or "MUTE","sls data",cx-cw/2*0.15-39+22,-ch*0.2+cy+k*cll*(15+b*20)-10,39,20,b*255,Color(0,0,0),function()
+			local usable = true
+
+			usable = not indepth and (v ~= LocalPlayer())
+			DepthButton(2000,usable,true,v:IsMuted() and "UNMUTE" or "MUTE","sls data",cx-cw/2*0.15-39+22,-ch*0.2+cy+k*cll*(15+b*20)-10,39,20,b*255,Color(0,0,0),function()
 				v:SetMuted(not v:IsMuted())
 			end)
 
-			DepthButton(2001,not indepth and cantar,true,"CLEAN","sls data",cx-cw/2*0.15-39-22,-ch*0.2+cy+k*cll*(15+b*20)-10,39,20,b*255,Color(0,0,0),function()
+			usable = not indepth and (LocalPlayer():CheckUserGroupLevel("designers") and cantar or (cantar and (v == LocalPlayer())))
+			DepthButton(2001,usable,true,"CLEAN","sls data",cx-cw/2*0.15-39-22,-ch*0.2+cy+k*cll*(15+b*20)-10,39,20,b*255,Color(0,0,0),function()
 				SendCommand("Cleanup",v)
 			end)
 			
-			DepthButton(2003,not indepth and (v ~= LocalPlayer()),true,"GOTO","sls data",cx-cw/2*-0.15-22,-ch*0.2+cy+k*cll*(15+b*20)-10,39,20,b*255,Color(0,0,0),function()
+			usable = not indepth and (v ~= LocalPlayer())
+			DepthButton(2003,usable,true,"GOTO","sls data",cx-cw/2*-0.15-22,-ch*0.2+cy+k*cll*(15+b*20)-10,39,20,b*255,Color(0,0,0),function()
 				SendCommand("Goto",v)	
 			end)
 			
-			DepthButton(2004,not indepth and (v ~= LocalPlayer()) and cantar,true,"BRING","sls data",cx-cw/2*-0.15+22,-ch*0.2+cy+k*cll*(15+b*20)-10,39,20,b*255,Color(0,0,0),function()
+			usable = not indepth and (v ~= LocalPlayer()) and cantar
+			DepthButton(2004,usable,true,"BRING","sls data",cx-cw/2*-0.15+22,-ch*0.2+cy+k*cll*(15+b*20)-10,39,20,b*255,Color(0,0,0),function()
 				SendCommand("Bring",v)	
 			end)
 			
@@ -488,52 +494,64 @@ if CLIENT then
 			surface.SetDrawColor(Color(bgcol.r,bgcol.g,bgcol.b,c*180))
 			surface.DrawPoly(dpol)
 			
-			local cantar = dptcply:Team() <= LocalPlayer():Team()
-			
+			local cantar = LocalPlayer():CheckUserGroupLevel(v:GetUserGroup())
+
 			local bo = 16
 			local bw,bh = dptmenu:GetWide()/4-bo*1.25,32
-			
-			DepthButton(1,dptcply ~= LocalPlayer() and cantar or false,true,"Bring","sls data",xx+bo,yy+bo,bw,bh,c*255,Color(0,0,0),function()
+			local usable = true
+
+			usable = dptcply ~= LocalPlayer() and cantar or false
+			DepthButton(1,usable,true,"Bring","sls data",xx+bo,yy+bo,bw,bh,c*255,Color(0,0,0),function()
 				SendCommand("Bring",dptcply)
 			end)
 			
-			DepthButton(2,cantar,true,dptcply:Alive() and (dptcply == LocalPlayer() and "Suicide" or "Kill") or "Revive","sls data",xx+bw+bo*2,yy+bo,bw,bh,c*255,Color(0,0,0),function()
+			usable = LocalPlayer():CheckUserGroupLevel("designers") and cantar or (dptcply == LocalPlayer())
+			DepthButton(2,usable,true,dptcply:Alive() and (dptcply == LocalPlayer() and "Suicide" or "Kill") or "Revive","sls data",xx+bw+bo*2,yy+bo,bw,bh,c*255,Color(0,0,0),function()
 				SendCommand(dptcply:Alive() and (dptcply == LocalPlayer() and "Kill" or "Slay") or "Revive",dptcply)
 			end)
 			
-			DepthButton(3,cantar,true,{"Kick","Are you sure?"},"sls data",xx+ww-bw*2-bo*2,yy+bo,bw,bh,c*255,Color(0,0,0),function()
+			usable = LocalPlayer():CheckUserGroupLevel("guardians") and cantar
+			DepthButton(3,usable,true,{"Kick","Are you sure?"},"sls data",xx+ww-bw*2-bo*2,yy+bo,bw,bh,c*255,Color(0,0,0),function()
 				SendCommand("Kick",dptcply)	
 			end)
 			
-			DepthButton(4,true,true,"User Profile","sls data",xx+ww-bw-bo,yy+bo,bw,bh,c*255,Color(0,0,0),function()
+			usable = true
+			DepthButton(4,usable,true,"User Profile","sls data",xx+ww-bw-bo,yy+bo,bw,bh,c*255,Color(0,0,0),function()
 				gui.OpenURL("http://steamcommunity.com/profiles/"..dptcply:SteamID64(),true)
 			end)
 			
-			DepthButton(5,dptcply ~= LocalPlayer() and true or false,true,"Goto","sls data",xx+bo,yy+bh+bo*2,bw,bh,c*255,Color(0,0,0),function()
+			usable = dptcply ~= LocalPlayer()
+			DepthButton(5,usable,true,"Goto","sls data",xx+bo,yy+bh+bo*2,bw,bh,c*255,Color(0,0,0),function()
 				SendCommand("Goto",dptcply)
 			end)
 			
-			DepthButton(6,cantar,true,"Strip Weapons","sls data",xx+bw+bo*2,yy+bh+bo*2,bw,bh,c*255,Color(0,0,0),function()
+			usable = LocalPlayer():CheckUserGroupLevel("guardians") and cantar
+			DepthButton(6,usable,true,"Strip Weapons","sls data",xx+bw+bo*2,yy+bh+bo*2,bw,bh,c*255,Color(0,0,0),function()
 				SendCommand("Strip",dptcply)
 			end)
 			
-			DepthButton(7,cantar,true,{"Drop Connection","Are you sure?"},"sls data",xx+ww-bw*2-bo*2,yy+bh+bo*2,bw,bh,c*255,Color(0,0,0),function()
+			usable = LocalPlayer():CheckUserGroupLevel("overwatch") and cantar
+			DepthButton(7,usable,true,{"Drop Connection","Are you sure?"},"sls data",xx+ww-bw*2-bo*2,yy+bh+bo*2,bw,bh,c*255,Color(0,0,0),function()
 				SendCommand("Drop",dptcply)	
 			end) 
 			
-			DepthButton(8,cantar,true,"Cleanup","sls data",xx+ww-bw-bo,yy+bh+bo*2,bw,bh,c*255,Color(0,0,0),function()
+			usable = (LocalPlayer():CheckUserGroupLevel("designers") and cantar or (cantar and (dptcply == LocalPlayer())))
+			DepthButton(8,usable,true,"Cleanup","sls data",xx+ww-bw-bo,yy+bh+bo*2,bw,bh,c*255,Color(0,0,0),function()
 				SendCommand("Cleanup",dptcply)	
 			end)
 			
-			DepthButton(9,LocalPlayer():CheckUserGroupLevel("guardians"),false,dptcply:IsFrozen() and "Unfreeze" or "Freeze","sls data",xx+bw+bo*2,yy+bh*2+bo*3,bw,bh,c*255,Color(0,0,0),function()
+			usable = LocalPlayer():CheckUserGroupLevel("guardians")
+			DepthButton(9,usable,false,dptcply:IsFrozen() and "Unfreeze" or "Freeze","sls data",xx+bw+bo*2,yy+bh*2+bo*3,bw,bh,c*255,Color(0,0,0),function()
 				SendCommand("Freeze",dptcply)
 			end)
 
-			DepthButton(10,true,false,dptcply:GetNetData("GodMode") and "Ungod" or "God","sls data",xx+bw+bo*2,yy+bh*3+bo*4,bw,bh,c*255,Color(0,0,0),function()
+			usable = LocalPlayer():CheckUserGroupLevel("designers") and cantar or (dptcply == LocalPlayer())
+			DepthButton(10,usable,false,dptcply:GetNetData("GodMode") and "Ungod" or "God","sls data",xx+bw+bo*2,yy+bh*3+bo*4,bw,bh,c*255,Color(0,0,0),function()
 				SendCommand("God",dptcply)
 			end)
 			
-			DepthButton(11,LocalPlayer():CheckUserGroupLevel("overwatch"),false,"Set Rank","sls data",xx+ww-bw-bo,yy+bh*2+bo*3,bw,bh,c*255,Color(0,0,0),function()
+			usable = LocalPlayer():CheckUserGroupLevel("overwatch") and cantar
+			DepthButton(11,usable,false,"Set Rank","sls data",xx+ww-bw-bo,yy+bh*2+bo*3,bw,bh,c*255,Color(0,0,0),function()
 				grpenab = not grpenab
 			end)
 			

@@ -1,5 +1,5 @@
 hook.Add("InitPostEntity","VECHUDcheck_HUD",function()
-local veccoms = veccoms or {}
+veccoms = veccoms or {}
 veccoms.visible = veccoms.visible or 1
 veccoms.lowhealthbeep = veccoms.lowhealthbeep or 1
 veccoms.lowhealthwiggle = veccoms.lowhealthwiggle or 1

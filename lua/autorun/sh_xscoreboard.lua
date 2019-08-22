@@ -494,7 +494,7 @@ if CLIENT then
 			surface.SetDrawColor(Color(bgcol.r,bgcol.g,bgcol.b,c*180))
 			surface.DrawPoly(dpol)
 			
-			local cantar = LocalPlayer():CheckUserGroupLevel(v:GetUserGroup())
+			local cantar = LocalPlayer():CheckUserGroupLevel(dptcply:GetUserGroup())
 
 			local bo = 16
 			local bw,bh = dptmenu:GetWide()/4-bo*1.25,32

@@ -1,5 +1,7 @@
 local function XHUDNameTagsInit()
-	--vechud nametags
+
+	veccoms = veccoms or {}
+	veccoms.nametags = veccoms.nametags or 1
 	
 	local blur = Material("pp/blurscreen")
 	local alpha = 100
@@ -25,19 +27,24 @@ local function XHUDNameTagsInit()
 			tw[k],th[k],g[k] 		= tw[k] or 0,th[k] or 0,g[k]  or 0
 			g[k] = math.Clamp(v:Health(),0,v:GetMaxHealth())/v:GetMaxHealth()
 			local p1,p2,p3 = pp1[k],pp2[k],pp3[k]
-		    if v:Alive() then 
-		    	if not v:Crouching() then
-		    	o[k] = AdvLerp(o[k],a,b,1,c,0.001) l[k] = o[k]
-		    	oo[k] = AdvLerp(oo[k],a,b,1,c,0.001) ll[k] = oo[k]
-		    	else
-		    		o[k] = AdvLerp(o[k],a,b,-1,c,0.001) l[k] = o[k]
-		    		oo[k] = AdvLerp(oo[k],a,b,-1,c,0.001) ll[k] = oo[k]
-	    		end
-	    		if g[k] <= 0.25 and not v:Crouching() then l[k] = o[k] + n ll[k] = oo[k] + nn else l[k] = o[k] end
-		    else 
-		    	o[k] = AdvLerp(o[k],a+0.25,b,-1,c,0.001) l[k] = o[k]
-		    	oo[k] = AdvLerp(oo[k],a+0.25,b,-1,c,0.001) ll[k] = oo[k]
-		    end
+			if veccoms.nametags == 0 then
+				o[k]  = AdvLerp(o[k] ,a,b,-1,c,0.001) l[k]  = o[k]
+			   	oo[k] = AdvLerp(oo[k],a,b,-1,c,0.001) ll[k] = oo[k]
+			else
+			    if v:Alive() then 
+			    	if not v:Crouching() then
+			    	o[k]  = AdvLerp(o[k] ,a,b,1,c,0.001) l[k]  = o[k]
+			    	oo[k] = AdvLerp(oo[k],a,b,1,c,0.001) ll[k] = oo[k]
+			    	else
+			    		o[k]  = AdvLerp(o[k] ,a,b,-1,c,0.001) l[k]  = o[k]
+			    		oo[k] = AdvLerp(oo[k],a,b,-1,c,0.001) ll[k] = oo[k]
+		    		end
+		    		if g[k] <= 0.25 and not v:Crouching() then l[k] = o[k] + n ll[k] = oo[k] + nn else l[k] = o[k] end
+			    else 
+			    	o[k]  = AdvLerp(o[k] ,a+0.25,b,-1,c,0.001) l[k]  = o[k]
+			    	oo[k] = AdvLerp(oo[k],a+0.25,b,-1,c,0.001) ll[k] = oo[k]
+			    end
+			end
 			if l[k] <= 0 and ll[k] <= 0 then continue end
 			local pname = v:Nick():gsub("%^%d+", ""):gsub("<(.-)=(.-)>", "")
 			surface.SetFont(font)

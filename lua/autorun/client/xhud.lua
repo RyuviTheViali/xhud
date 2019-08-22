@@ -16,6 +16,9 @@ local function XHUDInit()
 		gg = math.sin(CurTime()*6)*0.1
 		local h,ar = math.Clamp(m:Health(),0,m:GetMaxHealth())/m:GetMaxHealth(),m:Armor() <= 200 and (math.Clamp(m:Armor(),0,200))/200 or (math.Clamp(m:Armor(),0,255))/255
 		local w = m:GetActiveWeapon()
+		local godded = m:GetNetData("GodMode")
+		local overhealth = m:Health() > m:GetMaxHealth()
+		local hcol = godded and Color(180,80,255) or (overhealth and Color(255,200,64) or Color(255,64,64))
 		if veccoms.visible ~= 0 then if m:Alive() then
 			k = AdvLerp(k,a,b,1,c/2,0.001) v = k kk = AdvLerp(kk,a,b,1,c,0.001) vv = kk
 			if veccoms.lowhealthwiggle ~= 0 then if h <= 0.25 then v = k + g vv = kk + gg end end
@@ -71,10 +74,10 @@ local function XHUDInit()
 	    local htopx,htopy,hbotx,hboty = x-v*31,y-vv*124,x-v*210,y
 	    local hbarx,hbary = Lerp(h,hbotx,htopx),Lerp(h,hboty,htopy)
 		local hpoly = {{["x"]=hbarx-19,["y"]=hbary},{["x"]=hbarx+19,["y"]=hbary},{["x"]=hbotx+19,["y"]=hboty},{["x"]=hbotx-19,["y"]=hboty}}
-		if h <= 0.25 then surface.SetDrawColor(math.abs(math.sin(CurTime()*6)*255),64,64,math.abs(math.sin(CurTime()*6)*alpha/2)) else surface.SetDrawColor(255,64,64,alpha/2) end
+		if h <= 0.25 then surface.SetDrawColor(math.abs(math.sin(CurTime()*6)*hcol.r),hcol.g,hcol.b,math.abs(math.sin(CurTime()*6)*alpha/2)) else surface.SetDrawColor(hcol.r,hcol.g,hcol.b,alpha/2) end
 		surface.DrawPoly(hpoly)
-		draw.SimpleText(m:Health(),"TargetID",ScrW()/2-v*75,ScrH()-vv*122,Color(255,0,0,vv*alpha*1.2),2,1)
-		surface.SetDrawColor(255,64,64,vv*alpha)
+		draw.SimpleText(m:Health(),"TargetID",ScrW()/2-v*75,ScrH()-vv*122,Color(hcol.r,hcol.g,hcol.b,vv*alpha*1.2),2,1)
+		surface.SetDrawColor(hcol.r,hcol.g,hcol.b,vv*alpha)
 		surface.DrawLine(x-v*75-19,y-vv*93,x-v*75+19,y-vv*93)
 		surface.DrawLine(x-v*120-19,y-vv*62,x-v*120+19,y-vv*62)
 		surface.DrawLine(x-v*165-19,y-vv*31,x-v*165+19,y-vv*31)

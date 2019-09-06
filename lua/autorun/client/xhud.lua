@@ -153,7 +153,7 @@ local function XHUDInit()
 	hook.Add("HUDPaint","VECHUD_HUD",Starlight)
 
 	local function hidehud(name)
-		for k, v in pairs{"CHudHealth", "CHudBattery","CHudCrosshair","CHudCrosshais","CHudAmmo","CHudSecondaryAmmo"} do
+		for k, v in pairs{"CHudHealth", "CHudBattery","CHudCrosshairs","CHudAmmo","CHudSecondaryAmmo"} do
 			if name == v then return false end
 		end
 	end

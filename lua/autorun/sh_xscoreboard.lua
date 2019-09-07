@@ -290,6 +290,7 @@ if CLIENT then
 	function GM:HUDDrawScoreBoard()
 		if not GM.ShowScoreboard then return end
 		local vis = StarlightScoreVis
+		local lpbanned = xsys.xban and LocalPlayer():IsBanned() or false
 		if not vis then HideCTXMenu() HideDPTMenu() end
 		g,gg      = math.sin(CurTime()+0.66)*0.05,math.sin(CurTime())*0.05
 		inl,inll  = vis and AdvLerp(inl,0,1,1,speed,0.01) or AdvLerp(inl,0,1,-1,speed,0.01),vis and AdvLerp(inll,0,1,1,speed*2,0.01) or AdvLerp(inll,0,1,-1,speed,0.01)
@@ -337,6 +338,10 @@ if CLIENT then
 			sprites[i][8].a = a*0.5
 			DrawSprites(CurTime(),unpack(sprites[i]))
 		end
+
+		local headercol = lpbanned and Color(255,96,96,a*180) or Color(255,255,255,a*180)
+		local textcol   = lpbanned and Color(255,96,96,a*255) or Color(255,255,255,a*255)
+
 		surface.SetMaterial(blur)
 		for i=0.25,1,0.25 do
 			blur:SetInt("$blur",10*i)
@@ -352,7 +357,7 @@ if CLIENT then
 		surface.DrawPoly(p1)
 		surface.DrawPoly(p2)
 		surface.DrawPoly(p3)
-		draw.SimpleTextOutlined("X E N O R A",context and "sls massive" or "sls huge",cx,cy-ch/2*0.85,Color(255,255,255,a*180),1,1,1,Color(0,0,0,a*64))
+		draw.SimpleTextOutlined("X E N O R A",context and "sls massive" or "sls huge",cx,cy-ch/2*0.85,headercol,1,1,1,Color(0,0,0,a*64))
 		
 		local cppiowners = {}
 
@@ -373,15 +378,15 @@ if CLIENT then
 		local datafont  = context and "sls bigdata"  or "sls data"
 		local titlefont = context and "sls bigtitle" or "sls title"
 		
-		draw.SimpleTextOutlined("Friend Status",titlefont,cx-cw/2*0.85,-ch*0.25+cy+(15+b*20),Color(255,255,255,a*255),1,1,1,Color(0,0,0,a*255))
-		draw.SimpleTextOutlined("Ping"         ,titlefont,cx-cw/2*0.63,-ch*0.25+cy+(15+b*20),Color(255,255,255,a*255),1,1,1,Color(0,0,0,a*255))
-		draw.SimpleTextOutlined("Hours"        ,titlefont,cx-cw/2*0.47,-ch*0.25+cy+(15+b*20),Color(255,255,255,a*255),1,1,1,Color(0,0,0,a*255))
-		draw.SimpleTextOutlined("Props"        ,titlefont,cx-cw/2*0.30,-ch*0.25+cy+(15+b*20),Color(255,255,255,a*255),1,1,1,Color(0,0,0,a*255))
-		draw.SimpleTextOutlined("Name"         ,titlefont,cx          ,-ch*0.25+cy+(15+b*20),Color(255,255,255,a*255),1,1,1,Color(0,0,0,a*255))
-		draw.SimpleTextOutlined("Stats"        ,titlefont,cx+cw/2*0.30,-ch*0.25+cy+(15+b*20),Color(255,255,255,a*255),1,1,1,Color(0,0,0,a*255))
-		draw.SimpleTextOutlined("Index"        ,titlefont,cx+cw/2*0.44,-ch*0.25+cy+(15+b*20),Color(255,255,255,a*255),1,1,1,Color(0,0,0,a*255))
-		draw.SimpleTextOutlined("Steam ID"     ,titlefont,cx+cw/2*0.63,-ch*0.25+cy+(15+b*20),Color(255,255,255,a*255),1,1,1,Color(0,0,0,a*255))
-		draw.SimpleTextOutlined("Group"        ,titlefont,cx+cw/2*0.85,-ch*0.25+cy+(15+b*20),Color(255,255,255,a*255),1,1,1,Color(0,0,0,a*255))
+		draw.SimpleTextOutlined("Friend Status",titlefont,cx-cw/2*0.85,-ch*0.25+cy+(15+b*20),textcol,1,1,1,Color(0,0,0,a*255))
+		draw.SimpleTextOutlined("Ping"         ,titlefont,cx-cw/2*0.63,-ch*0.25+cy+(15+b*20),textcol,1,1,1,Color(0,0,0,a*255))
+		draw.SimpleTextOutlined("Hours"        ,titlefont,cx-cw/2*0.47,-ch*0.25+cy+(15+b*20),textcol,1,1,1,Color(0,0,0,a*255))
+		draw.SimpleTextOutlined("Props"        ,titlefont,cx-cw/2*0.30,-ch*0.25+cy+(15+b*20),textcol,1,1,1,Color(0,0,0,a*255))
+		draw.SimpleTextOutlined("Name"         ,titlefont,cx          ,-ch*0.25+cy+(15+b*20),textcol,1,1,1,Color(0,0,0,a*255))
+		draw.SimpleTextOutlined("Stats"        ,titlefont,cx+cw/2*0.30,-ch*0.25+cy+(15+b*20),textcol,1,1,1,Color(0,0,0,a*255))
+		draw.SimpleTextOutlined("Index"        ,titlefont,cx+cw/2*0.44,-ch*0.25+cy+(15+b*20),textcol,1,1,1,Color(0,0,0,a*255))
+		draw.SimpleTextOutlined("Steam ID"     ,titlefont,cx+cw/2*0.63,-ch*0.25+cy+(15+b*20),textcol,1,1,1,Color(0,0,0,a*255))
+		draw.SimpleTextOutlined("Group"        ,titlefont,cx+cw/2*0.85,-ch*0.25+cy+(15+b*20),textcol,1,1,1,Color(0,0,0,a*255))
 		
 		for k,v in pairs(p) do
 			local ct = #p

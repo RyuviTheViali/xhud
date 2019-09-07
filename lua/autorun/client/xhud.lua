@@ -13,6 +13,7 @@ local function XHUDInit()
 	local x,y = ScrW()/2,ScrH()
 
 	local function Starlight()
+		local lpbanned = xsys.xban and m:IsBanned()
 		g = math.sin(CurTime()*6+0.66)*0.05
 		gg = math.sin(CurTime()*6)*0.1
 		local h,ar = math.Clamp(m:Health(),0,m:GetMaxHealth())/m:GetMaxHealth(),m:Armor() <= 200 and (math.Clamp(m:Armor(),0,200))/200 or (math.Clamp(m:Armor(),0,255))/255
@@ -92,8 +93,8 @@ local function XHUDInit()
 		surface.DrawLine(x+v*75+19,y-vv*93,x+v*75-19,y-vv*93)
 		surface.DrawLine(x+v*120+19,y-vv*62,x+v*120-19,y-vv*62)
 		surface.DrawLine(x+v*165+19,y-vv*31,x+v*165-19,y-vv*31)
-		draw.SimpleText(os.date("%a,%I:%M:%S%p"),"DermaLarge",x,18+y-vv*2*18,Color(255,255,255,vv*alpha),1,1,1)
-		draw.SimpleText("FPS: "..math.floor(1/FrameTime()),"TargetID",x,47+y-vv*2*47,Color(255,255,255,vv*alpha),1,1)	
+		draw.SimpleText(os.date("%a,%I:%M:%S%p")          ,"DermaLarge",x,18+y-vv*2*18,lpbanned and Color(255,96,96,vv*alpha) or Color(255,255,255,vv*alpha),1,1)
+		draw.SimpleText("FPS: "..math.floor(1/FrameTime()),"TargetID"  ,x,47+y-vv*2*47,lpbanned and Color(255,96,96,vv*alpha) or Color(255,255,255,vv*alpha),1,1)	
 		if w:IsValid() then
 			local clip1 = w:Clip1() > 0 and (math.Clamp(w:Clip1(),0,w:GetMaxClip1())/w:GetMaxClip1()) or 0
 			local reswp1 = (math.Clamp(m:GetAmmoCount(w:GetPrimaryAmmoType())  ,0,w:GetMaxClip1() > 0 and w:GetMaxClip1() or 0)/(w:GetMaxClip1() > 0 and w:GetMaxClip1() or 0)) or 0

@@ -90,7 +90,11 @@ local function XHUDNameTagsInit()
 			surface.SetTexture(surface.GetTextureID("vgui/white"))
 			surface.SetDrawColor(t.r,t.g,t.b,alpha)
 			surface.DrawPoly(p1)
-			surface.SetDrawColor(bgcol)
+			if xsys.xban and v:IsBanned() then
+				surface.SetDrawColor(Color(64,16,16,bgcol.a))
+			else
+				surface.SetDrawColor(bgcol)
+			end
 			surface.DrawPoly(p2)
 			if g[k] <= 0.25 then
 				if v:Alive() then

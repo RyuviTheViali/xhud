@@ -32,7 +32,11 @@ local function IsTypingInit()
 			local tw,th = tw[k],th[k]
 			local t = team.GetColor(v:Team())
 			surface.SetTexture(surface.GetTextureID("vgui/white"))
-			surface.SetDrawColor(bgcol)
+			if xsys.xban and v:IsBanned() then
+				surface.SetDrawColor(Color(64,16,16,bgcol.a))
+			else
+				surface.SetDrawColor(bgcol)
+			end
 			poly1[k] = {{["x"]=0,["y"]=(256+(k*pls))-100},{["x"]=pvv*(tw*0.15),["y"]=256+(k*pls)},{["x"]=0,["y"]=(256+(k*pls))+100}}
 			poly2[k] = {{["x"]=0,["y"]=(256+(k*pls))-60 },{["x"]=pvv*(tw*0.70),["y"]=256+(k*pls)},{["x"]=0,["y"]=(256+(k*pls))+60 }}
 			poly3[k] = {{["x"]=0,["y"]=(256+(k*pls))-25 },{["x"]=pvv*(tw*1.30),["y"]=256+(k*pls)},{["x"]=0,["y"]=(256+(k*pls))+25 }}

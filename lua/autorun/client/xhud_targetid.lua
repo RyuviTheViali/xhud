@@ -47,7 +47,7 @@ local function VechudInitTargetID()
 		local owner = v.CPPIGetOwner and v:CPPIGetOwner() or NULL
 		owner = owner:IsValid() and owner or "World"
 		surface.SetTexture(surface.GetTextureID("vgui/white"))
-		if owner and type(owner) == "Player" and owner:IsBanned() then
+		if owner and type(owner) == "Player" and owner.IsBanned and owner:IsBanned() then
 	   		surface.SetDrawColor(Color(64,16,16,bgcol.a))
 	   	else
 	   		surface.SetDrawColor(bgcol)

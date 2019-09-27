@@ -293,7 +293,7 @@ if CLIENT then
 			data.NametagExtraInfo = 0
 		end
 
-		if ply ~= n.LocalPlayer and n.LookingAtNametag(ply,headpos) or n.LocalPlayer:GetEyeTrace().Entity == ply then
+		if ply ~= n.LocalPlayer and n.LookingAtNametag(ply,headpos) or n.LocalPlayer:GetEyeTrace().Entity == ply and  then
 			data.NametagExtraInfo = Lerp(0.5,data.NametagExtraInfo,1)
 		else
 			data.NametagExtraInfo = Lerp(0.5,data.NametagExtraInfo,0)
@@ -366,7 +366,7 @@ if CLIENT then
 				
 				if bb+rr*2+gg*3 < 0.006 and 
 					render.ComputeDynamicLighting(playereyepos,n.VectorDown):Length() == 0 and
-					render.ComputeDynamicLighting(playereyepos,n.Vectorup  ):Length() == 0 then
+					render.ComputeDynamicLighting(playereyepos,n.VectorUp  ):Length() == 0 then
 						continue
 				end
 				

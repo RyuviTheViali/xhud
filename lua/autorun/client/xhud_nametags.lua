@@ -293,7 +293,7 @@ if CLIENT then
 			data.NametagExtraInfo = 0
 		end
 
-		if ply ~= n.LocalPlayer and n.LookingAtNametag(ply,headpos) or n.LocalPlayer:GetEyeTrace().Entity == ply and  then
+		if ply ~= n.LocalPlayer and n.LookingAtNametag(ply,headpos) or n.LocalPlayer:GetEyeTrace().Entity == ply then
 			data.NametagExtraInfo = Lerp(0.5,data.NametagExtraInfo,1)
 		else
 			data.NametagExtraInfo = Lerp(0.5,data.NametagExtraInfo,0)

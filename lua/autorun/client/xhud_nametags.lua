@@ -204,7 +204,7 @@ if CLIENT then
 		
 		local ent = ragdoll:IsValid() and ragdoll or ply
 		
-		local  scale = ply:GetModelScale()
+		local  scale = ply.pac_model_scale and (ply.pac_model_scale.x+ply.pac_model_scale.y+ply.pac_model_scale.z)/3 or ply:GetModelScale()
 		local zscale = scale
 		
 		if scale < 1 then

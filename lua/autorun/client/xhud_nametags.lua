@@ -1,115 +1,379 @@
-local function XHUDNameTagsInit()
+XHUD = XHUD or {}
 
-	veccoms = veccoms or {}
-	veccoms.nametags = veccoms.nametags or 1
+XHUD.Nametags = XHUD.Nametags or {}
+
+local n = XHUD.Nametags
+
+n.ValidNametag = function(tag)
+	if tag == false                  then return true end
+	if tag == nil                    then return true end
+	if isstring(tag) and #tag < 1024 then return true end
+end
+
+local PlayerMeta = FindMetaTable("Player")
+
+function PlayerMeta:SetNametagTitle(title)
+	if title == "" then
+		title = nil
+	end
 	
-	local blur = Material("pp/blurscreen")
-	local alpha = 100
-	local bgcol = Color(0,0,0,alpha)
-	local m = LocalPlayer()
-	local o = Color(0,0,0,255)
+	if not n.ValidNametag(title) then return false end
 	
-	local a,b,c,n,nn,l,ll,o,oo,g = 0,1,16,0,0,{},{},{},{},{}
-	local x1,x2,y1,y2 = {},{},{},{}
-	local pp1,pp2,pp3 = {},{},{}
-	local tw,th = {},{}
-	local font  = "Default"
+	self:SetNetData("XHUDNametagTitle",title)
+end
+
+function PlayerMeta:GetNametagTitle()
+	return self:GetNetData("XHUDNametagTitle")
+end
+
+n.NametagNetData = function(ply,key,nametag)
+	if key ~= "XHUDNametagTitle"     then return end
+	if not n.ValidNametag(title) then return false end
 	
-	local function vechudnametags()
-		n = math.sin(CurTime()*6+0.66)*0.2
-		nn = math.sin(CurTime()*6)*0.2
-		for k,v in pairs(player.GetAll()) do
-			if v == m then continue end
-			if not v:IsValid() then return end
-			local p = (v:EyePos()+Vector(0,0,20)):ToScreen()
-			x1[k],x2[k],y1[k],y2[k] = x1[k] or 0,x2[k] or 0,y1[k] or 0,y2[k] or 0
-			o[k] ,oo[k],l[k] ,ll[k] = o[k]  or 0.5,oo[k] or 0.5,l[k]  or 0,ll[k] or 0
-			tw[k],th[k],g[k] 		= tw[k] or 0,th[k] or 0,g[k]  or 0
-			g[k] = math.Clamp(v:Health(),0,v:GetMaxHealth())/v:GetMaxHealth()
-			local p1,p2,p3 = pp1[k],pp2[k],pp3[k]
-			if veccoms.nametags == 0 then
-				o[k]  = AdvLerp(o[k] ,a,b,-1,c,0.001) l[k]  = o[k]
-			   	oo[k] = AdvLerp(oo[k],a,b,-1,c,0.001) ll[k] = oo[k]
-			else
-			    if v:Alive() then 
-			    	if not v:Crouching() then
-			    	o[k]  = AdvLerp(o[k] ,a,b,1,c,0.001) l[k]  = o[k]
-			    	oo[k] = AdvLerp(oo[k],a,b,1,c,0.001) ll[k] = oo[k]
-			    	else
-			    		o[k]  = AdvLerp(o[k] ,a,b,-1,c,0.001) l[k]  = o[k]
-			    		oo[k] = AdvLerp(oo[k],a,b,-1,c,0.001) ll[k] = oo[k]
-		    		end
-		    		if g[k] <= 0.25 and not v:Crouching() then l[k] = o[k] + n ll[k] = oo[k] + nn else l[k] = o[k] end
-			    else 
-			    	o[k]  = AdvLerp(o[k] ,a+0.25,b,-1,c,0.001) l[k]  = o[k]
-			    	oo[k] = AdvLerp(oo[k],a+0.25,b,-1,c,0.001) ll[k] = oo[k]
-			    end
-			end
-			if l[k] <= 0 and ll[k] <= 0 then continue end
-			local pname = v:Nick():gsub("%^%d+", ""):gsub("<(.-)=(.-)>", "")
-			surface.SetFont(font)
-			local x1,x2,y1,y2,l,ll,x,y,w,h = x1[k],x2[k],y1[k],y2[k],l[k],ll[k],p.x,p.y,tw[k],th[k]
-			w,h = surface.GetTextSize(pname)
-			w,h = w,h*3
-			local t = team.GetColor(v:Team())
-			if x < 0 or x > ScrW() then continue end
-			if y < 0 or y > ScrH() then continue end
+	if SERVER then return true end
+	
+	local ent = player.UserIDToEntity(ply)
+	
+	if IsValid(ent) then
+		ent.NametagTitle = nametag or false
+	end
+	
+	local lp = LocalPlayer()
+	lp = IsValid(lp) and lp
+	
+	if lp and ply == lp:UserID() then
+		if GetConVarNumber("xhud_nametags_report_change") == 1 then
+			Msg("[XHUD:Nametags] Saved nametag '"..tostring(nametag or "[NULL Nametag]").."'")
+		end
+		
+		nametag = (not nametag or nametag == "") and " " or nametag
+		
+		if not file.IsDir("xenora","DATA") then
+			file.CreateDir("xenora")
+		end
+		
+		file.Write("xenora/nametag_title.txt",nametag)
+	end
+	
+	return true
+end
+hook.Add("NetData","XHUDNametags",n.NametagNetData)
+
+if CLIENT then
+	n.NametagsVisible      = CreateClientConVar("xhud_nametags"              ,1,true,true ,"XHUD: Toggle visibility of nametags above players")
+	n.NametagsReportChange = CreateClientConVar("xhud_nametags_report_change",0,true,false,"XHUD: Report back if a player's nametag changes"  )
+	
+	n.Fonts = {
+		Nametag = {font="Helvetica",size=64,weight=0,antialias=true,prettyblur=1}
+	}
+	
+	n.FontScale = 0.1
+	
+	for k,v in pairs(XHUD.Nametags.Fonts) do
+		surface.CreateFont("XNametag_"..k,v)
+	end
+	
+	n.Initialized = false
+	n.LocalPlayer = LocalPlayer()
+	
+	n.Initialize = function()
+		if n.Initialized then return end
+		
+		n.Initialized = true
+		
+		local title = file.Read("xenora/nametag_title.txt",nametag)
+		
+		n.LocalPlayer = LocalPlayer()
+		n.LocalPlayer:SetNametagTitle(title)
+	end
+	hook.Add("InitPostEntity","XHUDNametagsInit",n.Initialize)
+	
+	if n.LocalPlayer:IsValid() then n.Initialize() end
+	
+	n.NametagAngle = Angle(0,0,90)
+	n.NametagVerticalOffset = 16
+	n.EyePos,n.EyeAngles = Vector(),Vector()
+	n.FrameNumber = 0
+	
+	n.RenderSceneUpdate = function(pos,ang)
+		n.EyePos,n.EyeAngles,n.FrameNumber = pos,ang,FrameNumber()
+	end
+	hook.Add("RenderScene","XHUDNametagsRenderScene",n.RenderSceneUpdate)
+	
+	n.GetPlayerHeadPos = function(ply)
+		local pos
+		
+		local bone = ply:GetAttachment(ply:LookupAttachment("eyes"))
+		
+		pos = bone and bone.Pos or nil
+		
+		if not pos then
+			local bone = ply:LookupBone("ValveBiped.Bip01_Head1")
 			
-			x1,x2,y1,y2 = (x-l*w*0.8)+5,(x+l*w*0.8)-5,(y-ll*h*0.2)+5,(y+ll*h*0.2)-5
-		    p1 = {
-		    	{["x"]=x1-5,["y"]=y,	["u"]=x1/ScrW(),["v"]=y/ScrH()},
-		    	{["x"]=x,	["y"]=y1-5,	["u"]=x/ScrW(),	["v"]=y1/ScrH()},
-		    	{["x"]=x2+5,["y"]=y,	["u"]=x2/ScrW(),["v"]=y/ScrH()},
-		    	{["x"]=x,	["y"]=y2+5,	["u"]=x/ScrW(),	["v"]=y2/ScrH()}
-		    }
-		    x1,x2,y1,y2 = (x-l*w*0.6)+5,(x+l*w*0.6)-5,(y-ll*h*0.4)+5,(y+ll*h*0.4)-5
-			p2 = {
-		    	{["x"]=x1-5,["y"]=y,	["u"]=x1/ScrW(),["v"]=y/ScrH()},
-		    	{["x"]=x,	["y"]=y1-5,	["u"]=x/ScrW(),	["v"]=y1/ScrH()},
-		    	{["x"]=x2+5,["y"]=y,	["u"]=x2/ScrW(),["v"]=y/ScrH()},
-		    	{["x"]=x,	["y"]=y2+5,	["u"]=x/ScrW(),	["v"]=y2/ScrH()}
-		    }
-			x1,x2,y1,y2 = (x-l*w*0.4)+5,(x+l*w*0.4)-5,(y-ll*h*0.6)+5,(y+ll*h*0.6)-5
-			p3 = {
-		    	{["x"]=x1-5,["y"]=y,	["u"]=x1/ScrW(),["v"]=y/ScrH()},
-		    	{["x"]=x,	["y"]=y1-5,	["u"]=x/ScrW(),	["v"]=y1/ScrH()},
-		    	{["x"]=x2+5,["y"]=y,	["u"]=x2/ScrW(),["v"]=y/ScrH()},
-		    	{["x"]=x,	["y"]=y2+5,	["u"]=x/ScrW(),	["v"]=y2/ScrH()}
-		    }
-			surface.SetMaterial(blur)
-			for i=0.25,1,0.25 do
-				blur:SetInt("$blur",5*i)
-				render.UpdateScreenEffectTexture()
-				surface.SetDrawColor(0,0,0,128)
-				surface.DrawPoly(p1)
-				surface.SetDrawColor(bgcol)
-				surface.DrawPoly(p2)
-				surface.DrawPoly(p3)
-			end
+			pos = bone and ply:GetBonePosition(bone) or ply:EyePos()
+		end
+		
+		return pos
+	end
+	
+	n.GetPlayerName = function(ply,data)
+		local name = ply:Nick()
+		local last = data.XHUDNametagsLastCleanName
+		
+		if name ~= last then
+			last = name:gsub("%^%d+",""):gsub("<(.-)=(.-)>","")
+			data.XHUDNametagsLastCleanName = last
+		end
+		
+		return last
+	end
+	
+	n.Colors = {
+		Black = Color(0  ,0  ,0  ,255),
+		White = Color(255,255,255,255),
+		AFK   = Color(100,100,100,255)
+	}
+	
+	n.HDRCheck   = true
+	n.HDR        = nil
+	n.UnitVector = Vector(1,1,1)
+	n.Spacing    = 1.5
+	
+	n.PlayerColors = {
+		["0"]  = Color(0  ,0  ,0  ),
+		["1"]  = Color(128,128,128),
+		["2"]  = Color(192,192,192),
+		["3"]  = Color(255,255,255),
+		["4"]  = Color(0  ,0  ,128),
+		["5"]  = Color(0  ,0  ,255),
+		["6"]  = Color(0  ,128,128),
+		["7"]  = Color(0  ,255,255),
+		["8"]  = Color(0  ,128,0  ),
+		["9"]  = Color(0  ,255,0  ),
+		["10"] = Color(128,128,0  ),
+		["11"] = Color(255,255,0  ),
+		["12"] = Color(128,0  ,0  ),
+		["13"] = Color(255,0  ,0  ),
+		["14"] = Color(128,0  ,128),
+		["15"] = Color(255,0  ,255)
+	}
+	
+	n.ParseHexColor = function(col)
+		if not col then
+			col = "ff00ff"
+		end
+	
+		col = col:upper()
+		local l = col:len()
+		
+		local rgb
+		
+		if l == 6 or l == 8 then
+			rgb = {}
 			
-			surface.SetTexture(surface.GetTextureID("vgui/white"))
-			surface.SetDrawColor(t.r,t.g,t.b,alpha)
-			surface.DrawPoly(p1)
-			if xsys.xban and v:IsBanned() then
-				surface.SetDrawColor(Color(64,16,16,bgcol.a))
-			else
-				surface.SetDrawColor(bgcol)
-			end
-			surface.DrawPoly(p2)
-			if g[k] <= 0.25 then
-				if v:Alive() then
-					surface.SetDrawColor(math.abs(math.sin(CurTime()*6)*255),0,0,math.abs(math.sin(CurTime()*6)*l*alpha/2))
-				else
-					surface.SetDrawColor(128,0,0,alpha/2)
+			for pair in string.gmatch(col,"%x%x") do
+				local i = tonumber(pair,16)
+				if i then
+					table.insert(rgb,i)
 				end
-			else
-				surface.SetDrawColor(bgcol)
 			end
-			surface.DrawPoly(p3)
-			draw.SimpleTextOutlined(pname,font,p.x,p.y,Color(255,255,255,ll*255),1,1,1,Color(0,0,0,ll*255))
+	
+			while #rgb < 4 do
+				table.insert(rgb,255)
+			end
+		elseif l == 3 then
+			rgb = {}
+			
+			for pair in string.gmatch(col,"%x") do
+				local i = tonumber(pair..pair,16)
+				if i then
+					table.insert(rgb,i)
+				end
+			end
+	
+			while #rgb < 4 do
+				table.insert(rgb,255)
+			end
+		end
+	
+		return rgb and Color(unpack(rgb))
+	end
+	
+	n.RenderNametag = function(ply,alpha,data,ragdoll)
+		surface.SetFont("XNametag_Nametag")
+		
+		local ent = ragdoll:IsValid() and ragdoll or ply
+		
+		local  scale = ply:GetModelScale()
+		local zscale = scale
+		
+		if scale < 1 then
+			 scale = 0.4+scale*0.6
+			zscale = 0.7+scale*0.3
+		end
+		
+		local headpos = n.GetPlayerHeadPos(ent)+ent:GetUp()*(n.NametagVerticalOffset*zscale)
+		
+		local text = n.GetPlayerName(ply,data)
+		local w,h  = surface.GetTextSize(text)
+		local size = 0.6*scale*n.FontScale
+		local namecol
+		
+		for col in string.gmatch(ply:Nick(),"%^(%d+)") do
+			namecol = n.PlayerColors[col]
+		end
+		
+		for h,s,v in string.gmatch(ply:Nick(),"<hsv=(%d+%.?%d*),(%d+%.?%d*),(%d+%.?%d*)>") do
+			namecol = HSVToColor(h,s,v)
+		end
+		
+		for r,g,b in string.gmatch(ply:Nick(),"<color=(%d+%.?%d*),(%d+%.?%d*),(%d+%.?%d*)>") do
+			namecol = Color(r,g,b,255)
+		end
+		
+		for hex in string.gmatch(ply:Nick(),"<c=([0123456789abcdefABCDEF]+)>") do
+			namecol = n.ParseHexColor(hex) or nil
+		end
+		
+		local col = namecol and namecol or team.GetColor(ply:Team())
+		
+		n.Colors.Black.a = alpha
+		n.Colors.White.a = alpha
+		n.Colors.AFK.a   = alpha
+		col.a            = alpha
+		
+		cam.Start3D2D(headpos,n.NametagAngle,size)
+			surface.SetTextColor(col)
+			surface.SetTextPos(-0.5*w,0)
+			surface.DrawText(text)
+		cam.End3D2D()
+		
+		local heightoffset = h*n.Spacing
+		
+		local title = data.NametagTitle
+		
+		if title == nil then
+			title = ply:GetNametagTitle()
+		end
+		
+		if title then
+			local w,h = surface.GetTextSize(title)
+			cam.Start3D2D(headpos,n.NametagAngle,scale*n.FontScale*0.4)
+				surface.SetTextColor(n.Colors.White)
+				surface.SetTextPos(-w/2,heightoffset)
+				surface.DrawText(title)
+			cam.End3D2D()
+			
+			heightoffset = heightoffset+(h*n.Spacing*(1/scale))
+		end
+		
+		if PlayerMeta.IsAFK and ply:IsAFK() then
+			local w,h = surface.GetTextSize("[AFK]")
+			
+			cam.Start3D2D(headpos,n.Nametagangle,scale*n.FontScale*0.3)
+				surface.SetTextColor(n.Colors.AFK)
+				surface.SetTextPos(-w/2,-n.Spacing*h/n.Spacing)
+				surface.DrawText("[AFK]")
+			cam.End3D2D()
 		end
 	end
-	hook.Add("HUDPaint","vechudnametags",vechudnametags)
+	
+	n.VectorDown      = Vector(0,0,-1)
+	n.VectorUp        = Vector(0,0, 1)
+	n.LastFrameNumber = 0
+	n.Renderables     = {}
+	n.NametagFadeDist = 1024
+	
+	n.RenderPlayerNametags = function()
+		if not n.NametagsVisible:GetBool()          then return end
+		if LocalPlayer():GetNWBool("XHUDHideNames") then return end
+		
+		local tonemap
+		
+		if n.HDR then
+			tonemap = render.GetToneMappingScaleLinear()
+			render.SetToneMappingScaleLinear(n.UnitVector)
+		elseif n.HDRCheck then
+			n.HDRCheck = false
+			local tonemap = render.GetToneMappingScaleLinear()
+			n.HDR = tonemap.x ~= 1 or tonemap.y ~= 1 or tonemap.z ~= 1
+		end
+		
+		n.NametagAngle = n.EyeAngles*1
+		
+		n.NametagAngle:RotateAroundAxis(n.NametagAngle:Up()     ,-90)
+		n.NametagAngle:RotateAroundAxis(n.NametagAngle:Forward(), 90)
+		
+		local currentframenumber = n.FrameNumber-1
+		
+		for k,v in next,n.Renderables do
+			if not k:IsValid() then
+				n.Renderables[k] = nil
+				continue
+			end
+			
+			local ragdoll = k:GetRagdollEntity()
+			
+			if v ~= currentframenumber and not ragdoll then continue end
+			
+			local playereyepos = k:EyePos()
+			
+			if playereyepos:Distance(n.EyePos) > n.NametagFadeDist or k:Crouching() then continue end
+			
+			local data = k:GetTable()
+			local pixvis = data.XHUDNametagPixVis
+			
+			if not pixvis then
+				pixvis = util.GetPixelVisibleHandle()
+				data.XHUDNametagPixVis = pixvis
+			end
+			
+			local pvis = util.PixelVisible(playereyepos,32,pixvis)
+			
+			if pvis > 0 then
+				local lightcolor = render.GetLightColor(playereyepos)
+				local rr,gg,bb = lightcolor.x,lightcolor.y,lightcolor.z
+				
+				if bb+rr*2+gg*3 < 0.006 and 
+					render.ComputeDynamicLighting(playereyepos,n.VectorDown):Length() == 0 and
+					render.ComputeDynamicLighting(playereyepos,n.Vectorup  ):Length() == 0 then
+						continue
+				end
+				
+				pvis = pvis > 0.5 and 1 or pvis
+				
+				n.RenderNametag(k,pvis*255,data,ragdoll)
+			end
+		end
+		
+		if tonemap then
+			render.SetToneMappingScaleLinear(tonemap)
+		end
+	end
+	hook.Add("PostDrawTranslucentRenderables","XHUDNametagsRender",n.RenderPlayerNametags)
+	
+	n.AnimationsCheck = function(ply)
+		if ply == n.LocalPlayer and not ply:ShouldDrawLocalPlayer() then return end
+		
+		n.Renderables[ply] = n.FrameNumber
+	end
+	hook.Add("UpdateAnimation","XHUDNametagsUpdateAnimation",n.AnimationsCheck)
+else
+	hook.Add("Tick","XHUDNametagsInitialInit",function()
+		if XSYS_FUNCTIONAL then
+			xsys.AddCommand("title",function(ply,txt,target,title)
+				if not title or not ply:CheckUserGroupLevel("developers") then
+					ply:SetNametagTitle(txt or "")
+				else
+					local ent = easylua.FindEntity(target)
+					
+					if not IsValid(ent) or not ent:IsPlayer() then return false,xsys.NoTarget(target) end
+					
+					ent:SetNametagTitle(title)
+				end
+			end,"players")
+			
+			hook.Remove("Tick","XHUDNametagsInitialInit")
+		end
+	end)
 end
-XHUDNameTagsInit()
-hook.Add("InitPostEntity","VECHUDcheck_NameTags",XHUDNameTagsInit)

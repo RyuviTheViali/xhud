@@ -66,15 +66,53 @@ if CLIENT then
 	n.Fonts = {
 		Nametag = {font="Helvetica",size=64,weight=0,antialias=true,prettyblur=1}
 	}
-	
-	n.FontScale = 0.1
-	
+
 	for k,v in pairs(XHUD.Nametags.Fonts) do
 		surface.CreateFont("XNametag_"..k,v)
 	end
 	
-	n.Initialized = false
-	n.LocalPlayer = LocalPlayer()
+	n.Initialized           = false
+	n.HDRCheck              = true
+	n.HDR                   = nil
+	n.LocalPlayer           = LocalPlayer()
+	n.EyePos                = Vector()
+	n.EyeAngles             = Vector()
+	n.UnitVector            = Vector(1,1,1)
+	n.VectorDown            = Vector(0,0,-1)
+	n.VectorUp              = Vector(0,0, 1)
+	n.NametagAngle          = Angle(0,0,90)
+	n.FrameNumber           = 0
+	n.LastFrameNumber       = 0
+	n.Spacing               = 1.5
+	n.FontScale             = 0.1
+	n.NametagVerticalOffset = 16
+	n.NametagFadeDist       = 1024
+	n.Renderables           = {}
+
+	n.Colors = {
+		Black = Color(0  ,0  ,0  ,255),
+		White = Color(255,255,255,255),
+		AFK   = Color(100,100,100,255)
+	}
+	
+	n.PlayerColors = {
+		["0"]  = Color(0  ,0  ,0  ),
+		["1"]  = Color(128,128,128),
+		["2"]  = Color(192,192,192),
+		["3"]  = Color(255,255,255),
+		["4"]  = Color(0  ,0  ,128),
+		["5"]  = Color(0  ,0  ,255),
+		["6"]  = Color(0  ,128,128),
+		["7"]  = Color(0  ,255,255),
+		["8"]  = Color(0  ,128,0  ),
+		["9"]  = Color(0  ,255,0  ),
+		["10"] = Color(128,128,0  ),
+		["11"] = Color(255,255,0  ),
+		["12"] = Color(128,0  ,0  ),
+		["13"] = Color(255,0  ,0  ),
+		["14"] = Color(128,0  ,128),
+		["15"] = Color(255,0  ,255)
+	}
 	
 	n.Initialize = function()
 		if n.Initialized then return end
@@ -90,11 +128,6 @@ if CLIENT then
 	
 	if n.LocalPlayer:IsValid() then n.Initialize() end
 	
-	n.NametagAngle = Angle(0,0,90)
-	n.NametagVerticalOffset = 16
-	n.EyePos,n.EyeAngles = Vector(),Vector()
-	n.FrameNumber = 0
-	
 	n.RenderSceneUpdate = function(pos,ang)
 		n.EyePos,n.EyeAngles,n.FrameNumber = pos,ang,FrameNumber()
 	end
@@ -102,7 +135,6 @@ if CLIENT then
 	
 	n.GetPlayerHeadPos = function(ply)
 		local pos
-		
 		local bone = ply:GetAttachment(ply:LookupAttachment("eyes"))
 		
 		pos = bone and bone.Pos or nil
@@ -128,42 +160,12 @@ if CLIENT then
 		return last
 	end
 	
-	n.Colors = {
-		Black = Color(0  ,0  ,0  ,255),
-		White = Color(255,255,255,255),
-		AFK   = Color(100,100,100,255)
-	}
-	
-	n.HDRCheck   = true
-	n.HDR        = nil
-	n.UnitVector = Vector(1,1,1)
-	n.Spacing    = 1.5
-	
-	n.PlayerColors = {
-		["0"]  = Color(0  ,0  ,0  ),
-		["1"]  = Color(128,128,128),
-		["2"]  = Color(192,192,192),
-		["3"]  = Color(255,255,255),
-		["4"]  = Color(0  ,0  ,128),
-		["5"]  = Color(0  ,0  ,255),
-		["6"]  = Color(0  ,128,128),
-		["7"]  = Color(0  ,255,255),
-		["8"]  = Color(0  ,128,0  ),
-		["9"]  = Color(0  ,255,0  ),
-		["10"] = Color(128,128,0  ),
-		["11"] = Color(255,255,0  ),
-		["12"] = Color(128,0  ,0  ),
-		["13"] = Color(255,0  ,0  ),
-		["14"] = Color(128,0  ,128),
-		["15"] = Color(255,0  ,255)
-	}
-	
 	n.ParseHexColor = function(col)
 		if not col then
 			col = "ff00ff"
 		end
 	
-		col = col:upper()
+		col     = col:upper()
 		local l = col:len()
 		
 		local rgb
@@ -197,6 +199,14 @@ if CLIENT then
 		end
 	
 		return rgb and Color(unpack(rgb))
+	end
+
+	n.LookingAtNametag = function(ply,pos)
+		local forward = n.EyeAngles:Forward()
+		local forvec  = pos-n.EyePos
+		local dot     = forward:Dot(forvec)/forvec:Length()
+
+		return dot >= 0.975
 	end
 	
 	n.RenderNametag = function(ply,alpha,data,ragdoll)
@@ -266,23 +276,43 @@ if CLIENT then
 			
 			heightoffset = heightoffset+(h*n.Spacing*(1/scale))
 		end
+
+		local isafk = PlayerMeta.IsAFK and ply:IsAFK() or false
 		
-		if PlayerMeta.IsAFK and ply:IsAFK() then
+		if isafk then
 			local w,h = surface.GetTextSize("[AFK]")
 			
-			cam.Start3D2D(headpos,n.Nametagangle,scale*n.FontScale*0.3)
+			cam.Start3D2D(headpos,n.NametagAngle,scale*n.FontScale*0.3)
 				surface.SetTextColor(n.Colors.AFK)
 				surface.SetTextPos(-w/2,-n.Spacing*h/n.Spacing)
 				surface.DrawText("[AFK]")
 			cam.End3D2D()
 		end
+
+		if not data.NametagExtraInfo then
+			data.NametagExtraInfo = 0
+		end
+
+		if ply ~= n.LocalPlayer and n.LookingAtNametag(ply,headpos) or n.LocalPlayer:GetEyeTrace().Entity == ply then
+			data.NametagExtraInfo = Lerp(0.5,data.NametagExtraInfo,1)
+		else
+			data.NametagExtraInfo = Lerp(0.5,data.NametagExtraInfo,0)
+		end
+
+		if data.NametagExtraInfo > 0 then
+			local teamname = team.GetName(ply:Team())
+			teamname = teamname:sub(1,1):upper()..teamname:sub(2,teamname:sub(-1) == "s" and -2 or -1)
+			local w,h  = surface.GetTextSize(teamname)
+			local tcol = team.GetColor(ply:Team())
+			tcol.a     = alpha*data.NametagExtraInfo
+			
+			cam.Start3D2D(headpos,n.NametagAngle,scale*n.FontScale*0.3)
+				surface.SetTextColor(tcol)
+				surface.SetTextPos(-w/2,-n.Spacing*h*(isafk and 1.5 or 0.66))
+				surface.DrawText(teamname)
+			cam.End3D2D()
+		end
 	end
-	
-	n.VectorDown      = Vector(0,0,-1)
-	n.VectorUp        = Vector(0,0, 1)
-	n.LastFrameNumber = 0
-	n.Renderables     = {}
-	n.NametagFadeDist = 1024
 	
 	n.RenderPlayerNametags = function()
 		if not n.NametagsVisible:GetBool()          then return end

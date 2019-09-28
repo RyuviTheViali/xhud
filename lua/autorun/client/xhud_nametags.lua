@@ -1,3 +1,5 @@
+AddCSLuaFile()
+
 XHUD = XHUD or {}
 
 XHUD.Nametags = XHUD.Nametags or {}

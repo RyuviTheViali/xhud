@@ -203,6 +203,10 @@ if CLIENT then
 		return rgb and Color(unpack(rgb))
 	end
 
+	n.SecondsToFormattedTime = function(seconds)
+		return string.format("%02d:%02d:%02d",math.floor(seconds/3600),math.floor(seconds/60)%60,seconds%60)
+	end
+
 	n.LookingAtNametag = function(ply,pos)
 		local forward = n.EyeAngles:Forward()
 		local forvec  = pos-n.EyePos

@@ -546,7 +546,7 @@ if CLIENT then
 				SendCommand("Cleanup",dptcply)	
 			end)
 			
-			usable = LocalPlayer():CheckUserGroupLevel("guardians")
+			usable = LocalPlayer():CheckUserGroupLevel("guardians") and cantar
 			DepthButton(9,unbanned and usable,false,dptcply:IsFrozen() and "Unfreeze" or "Freeze","sls data",xx+bw+bo*2,yy+bh*2+bo*3,bw,bh,c*255,Color(0,0,0),function()
 				SendCommand("Freeze",dptcply)
 			end)

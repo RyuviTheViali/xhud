@@ -282,12 +282,20 @@ if CLIENT then
 		local isafk = PlayerMeta.IsAFK and ply:IsAFK() or false
 		
 		if isafk then
-			local w,h = surface.GetTextSize("[AFK]")
+			local afktxt = "(AFK)"
+			local afktimetxt = n.SecondsToFormattedTime(ply.GetAFKTime and ply:GetAFKTime() or 0)
+			local w,h   = surface.GetTextSize(afktxt)
+			local w2,h2 = surface.GetTextSize(afktimetxt)
 			
 			cam.Start3D2D(headpos,n.NametagAngle,scale*n.FontScale*0.3)
 				surface.SetTextColor(n.Colors.AFK)
 				surface.SetTextPos(-w/2,-n.Spacing*h/n.Spacing)
-				surface.DrawText("[AFK]")
+				surface.DrawText(afktxt)
+			cam.End3D2D()
+				
+			cam.Start3D2D(headpos,n.NametagAngle,scale*n.FontScale*0.2)
+				surface.SetTextPos(-w2/2,-n.Spacing*h2*2.5/n.Spacing)
+				surface.DrawText(afktimetxt)
 			cam.End3D2D()
 		end
 
@@ -310,7 +318,7 @@ if CLIENT then
 			
 			cam.Start3D2D(headpos,n.NametagAngle,scale*n.FontScale*0.3)
 				surface.SetTextColor(tcol)
-				surface.SetTextPos(-w/2,-n.Spacing*h*(isafk and 1.5 or 0.66))
+				surface.SetTextPos(-w/2,-n.Spacing*h*(isafk and 1.85 or 0.66))
 				surface.DrawText(teamname)
 			cam.End3D2D()
 		end
